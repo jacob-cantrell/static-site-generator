@@ -1,6 +1,5 @@
 import unittest
 from textnode import TextNode, TextType, text_node_to_html_node
-from leafnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
     # Test Node Equality
@@ -31,7 +30,7 @@ class TestTextNode(unittest.TestCase):
 
     # Test text_node_to_leaf_node
     def test_normal(self):
-        node = TextNode("test text", TextType.NORMAL)
+        node = TextNode("test text", TextType.TEXT)
         leaf = text_node_to_html_node(node)
         self.assertEqual(
             leaf.to_html(),
