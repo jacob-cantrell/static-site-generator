@@ -1,8 +1,9 @@
 import unittest
-from split_nodes_delimiter import split_nodes_delimiter
+from split_node_functions import split_nodes_delimiter, split_nodes_images, split_nodes_links
 from textnode import TextNode, TextType
 
-class  TestSplitNodesDelimiter(unittest.TestCase):
+class  TestSplitNodesFunctions(unittest.TestCase):
+    # SPLIT_NODES_DELIMITER FUNCTION TESTS
     def test_split_node_asterik_delimiter(self):
         nodes = [
             TextNode("test *test text* test 2", TextType.TEXT)
@@ -124,3 +125,5 @@ class  TestSplitNodesDelimiter(unittest.TestCase):
                 TextNode("test `text`", TextType.BOLD)
             ]
         )
+
+        # SPLIT_NODES_IMAGES FUNCTION TEST

@@ -21,3 +21,9 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         text_node_list.extend(node_list)
 
     return text_node_list
+
+def split_nodes_images(old_nodes):
+    pass
+
+def split_nodes_links(old_nodes):
+    pass
