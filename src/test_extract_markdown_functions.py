@@ -6,7 +6,7 @@ class TestExtractMarkdownFunctions(unittest.TestCase):
         text = "This is just text"
         self.assertEqual(
             extract_markdown_images(text),
-            None
+            []
         )
 
     def test_one_markdown_image(self):
@@ -27,14 +27,14 @@ class TestExtractMarkdownFunctions(unittest.TestCase):
         text = "This is text with a link [to boot dev](https://www.boot.dev)"
         self.assertEqual(
             extract_markdown_images(text),
-            None
+            []
         )
 
     def test_no_markdown_found_link(self):
         text = "This is just text"
         self.assertEqual(
             extract_markdown_link(text),
-            None
+            []
         )
 
     def test_one_markdown_link(self):
@@ -55,5 +55,5 @@ class TestExtractMarkdownFunctions(unittest.TestCase):
         text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)"
         self.assertEqual(
             extract_markdown_link(text),
-            None
+            []
         )
