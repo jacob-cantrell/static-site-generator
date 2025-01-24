@@ -1,6 +1,6 @@
 import re
 
-def extract_markdown_images(text):
+def extract_markdown_image(text):
     # Find all markdown images in text (returns empty list if nothing found)
     return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
