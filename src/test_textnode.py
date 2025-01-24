@@ -1,7 +1,9 @@
 import unittest
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
+from leafnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
+    # Test Node Equality
     def test_eq(self):
         node = TextNode("This is a text node", TextType.BOLD)
         node2 = TextNode("This is a text node", TextType.BOLD)
@@ -26,6 +28,62 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("This is a text node", TextType.BOLD, "https://google.com")
         node2 = TextNode("This is a text node", TextType.BOLD, "https://boot.dev")
         self.assertNotEqual(node, node2)
+
+    # Test text_node_to_leaf_node
+    def test_normal(self):
+        node = TextNode("test text", TextType.NORMAL)
+        leaf = text_node_to_html_node(node)
+        self.assertEqual(
+            leaf.to_html(),
+            "test text"
+        )
+
+    def test_bold(self):
+        node = TextNode("test text", TextType.BOLD)
+        leaf = text_node_to_html_node(node)
+        self.assertEqual(
+            leaf.to_html(),
+            "<b>test text</b>"
+        )
+
+    def test_italics(self):
+        node = TextNode("test text", TextType.ITALIC)
+        leaf = text_node_to_html_node(node)
+        self.assertEqual(
+            leaf.to_html(),
+            "<i>test text</i>"
+        )
+
+    def test_code(self):
+        node = TextNode("test text", TextType.CODE)
+        leaf = text_node_to_html_node(node)
+        self.assertEqual(
+            leaf.to_html(),
+            "<code>test text</code>"
+        )
+
+    def test_link(self):
+        node = TextNode("test text", TextType.LINK, "https://google.com")
+        leaf = text_node_to_html_node(node)
+        self.assertEqual(
+            leaf.to_html(),
+            "<a href=\"https://google.com\">test text</a>"
+        )
+
+    def test_image(self):
+        node = TextNode("test text", TextType.IMAGE, "https://google.com")
+        leaf = text_node_to_html_node(node)
+        self.assertEqual(
+            leaf.to_html(),
+            "<img src=\"https://google.com\" alt=\"test text\"></img>"
+        )
+
+    def test_invalid_type(self):
+        node = TextNode("test text", None)
+        try:
+            text_node_to_html_node(node)
+        except Exception:
+            self.assertRaises(Exception)
 
 if __name__ == "__main__":
     unittest.main()
