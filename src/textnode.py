@@ -1,5 +1,6 @@
 from enum import Enum
 from leafnode import LeafNode
+import split_node_functions
 
 class TextType(Enum):
     TEXT = "text",
