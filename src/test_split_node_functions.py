@@ -1,5 +1,5 @@
 import unittest
-from split_node_functions import split_nodes_delimiter, split_nodes_images, split_nodes_links
+from split_node_functions import split_nodes_delimiter, split_nodes_image, split_nodes_link
 from textnode import TextNode, TextType
 
 class  TestSplitNodesFunctions(unittest.TestCase):
@@ -126,4 +126,286 @@ class  TestSplitNodesFunctions(unittest.TestCase):
             ]
         )
 
-        # SPLIT_NODES_IMAGES FUNCTION TEST
+    # SPLIT_NODES_IMAGES FUNCTION TEST
+    def test_split_image_just_text_type(self):
+        nodes = [
+            TextNode("This is just a test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [TextNode("This is just a test", TextType.TEXT)]
+        )
+
+    def test_split_image_empty_text_value(self):
+        nodes = [
+            TextNode("", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            []
+        )
+
+    def test_split_image_one_markdown_begin(self):
+        nodes = [
+            TextNode("![rick roll](https://i.imgur.com/aKaOqIh.gif) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+             TextNode(" test", TextType.TEXT, None)]
+        )
+
+    def test_split_image_one_markdown_middle(self):
+        nodes = [
+            TextNode("text ![rick roll](https://i.imgur.com/aKaOqIh.gif) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [
+                TextNode("text ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" test", TextType.TEXT, None)
+            ]
+        )
+
+    def test_split_image_one_markdown_end(self):
+        nodes = [
+            TextNode("text ![rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [
+                TextNode("text ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif")
+            ]
+        )
+
+    def test_split_image_one_markdown_mult_nodes(self):
+        nodes = [
+            TextNode("text ![rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.TEXT),
+            TextNode("![rick roll](https://i.imgur.com/aKaOqIh.gif) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [
+                TextNode("text ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" test", TextType.TEXT, None)
+            ]
+        )
+
+    def test_split_image_two_markdown_begin(self):
+        nodes = [
+            TextNode("![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg")
+            ]
+        )
+
+    def test_split_image_two_markdown_wrapped(self):
+        nodes = [
+            TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [
+                TextNode("This is text with a ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" test", TextType.TEXT)
+            ]
+        )
+
+    def test_split_image_one_and_two_markdown_mult_nodes(self):
+        nodes = [
+            TextNode("text ![rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.TEXT),
+            TextNode("![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [
+                TextNode("text ", TextType.TEXT),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg")
+            ]
+        )
+
+    def test_split_image_two_and_two_markdown_mult_nodes(self):
+        nodes = [
+            TextNode("![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)", TextType.TEXT),
+            TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_image(nodes),
+            [
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode("This is text with a ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" test", TextType.TEXT)
+            ]
+        )
+
+    # SPLIT_NODES_LINKS FUNCTION TEST
+    def test_split_link_just_text_type(self):
+        nodes = [
+            TextNode("This is just a test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [TextNode("This is just a test", TextType.TEXT)]
+        )
+
+    def test_split_link_empty_text_value(self):
+        nodes = [
+            TextNode("", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            []
+        )
+
+    def test_split_link_one_markdown_begin(self):
+        nodes = [
+            TextNode("[rick roll](https://i.imgur.com/aKaOqIh.gif) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+             TextNode(" test", TextType.TEXT, None)]
+        )
+
+    def test_split_link_one_markdown_middle(self):
+        nodes = [
+            TextNode("text [rick roll](https://i.imgur.com/aKaOqIh.gif) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [
+                TextNode("text ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" test", TextType.TEXT, None)
+            ]
+        )
+
+    def test_split_link_one_markdown_end(self):
+        nodes = [
+            TextNode("text [rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [
+                TextNode("text ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif")
+            ]
+        )
+
+    def test_split_image_one_markdown_mult_nodes(self):
+        nodes = [
+            TextNode("text [rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.TEXT),
+            TextNode("[rick roll](https://i.imgur.com/aKaOqIh.gif) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [
+                TextNode("text ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" test", TextType.TEXT, None)
+            ]
+        )
+
+    def test_split_link_two_markdown_begin(self):
+        nodes = [
+            TextNode("[rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.LINK, "https://i.imgur.com/fJRm4Vk.jpeg")
+            ]
+        )
+
+    def test_split_link_two_markdown_wrapped(self):
+        nodes = [
+            TextNode("This is text with a [rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [
+                TextNode("This is text with a ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.LINK, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" test", TextType.TEXT)
+            ]
+        )
+
+    def test_split_link_one_and_two_markdown_mult_nodes(self):
+        nodes = [
+            TextNode("text [rick roll](https://i.imgur.com/aKaOqIh.gif)", TextType.TEXT),
+            TextNode("[rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [
+                TextNode("text ", TextType.TEXT),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.LINK, "https://i.imgur.com/fJRm4Vk.jpeg")
+            ]
+        )
+
+    def test_split_link_two_and_two_markdown_mult_nodes(self):
+        nodes = [
+            TextNode("[rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)", TextType.TEXT),
+            TextNode("This is text with a [rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg) test", TextType.TEXT)
+        ]
+
+        self.assertEqual(
+            split_nodes_link(nodes),
+            [
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.LINK, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode("This is text with a ", TextType.TEXT, None),
+                TextNode("rick roll", TextType.LINK, "https://i.imgur.com/aKaOqIh.gif"),
+                TextNode(" and ", TextType.TEXT, None),
+                TextNode("obi wan", TextType.LINK, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" test", TextType.TEXT)
+            ]
+        )
