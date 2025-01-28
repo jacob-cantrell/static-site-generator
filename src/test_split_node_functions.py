@@ -36,6 +36,39 @@ class  TestSplitNodesFunctions(unittest.TestCase):
             ]
         )
 
+    def test_given_by_boots_1(self):
+        node = TextNode("text **bold** more **bold2**", TextType.TEXT)
+        
+        self.assertEqual(
+            split_nodes_delimiter([node], "**", TextType.BOLD),
+            [
+                TextNode("text ", TextType.TEXT, None),
+                TextNode("bold", TextType.BOLD, None),
+                TextNode(" more ", TextType.TEXT, None),
+                TextNode("bold2", TextType.BOLD, None)
+            ]
+        )
+
+    def test_given_by_boots_2(self):
+        node = TextNode("Visit `my site` here", TextType.TEXT, url="https://example.com")
+
+        self.assertEqual(
+            split_nodes_delimiter([node], "`", TextType.CODE),
+            [
+                TextNode("Visit ", TextType.TEXT, "https://example.com"),
+                TextNode("my site", TextType.CODE, "https://example.com"),
+                TextNode(" here", TextType.TEXT, "https://example.com")
+            ]
+        )
+
+    def test_given_by_boots_3(self):
+        node = TextNode("text **bold** **", TextType.TEXT)
+
+        try:
+            split_nodes_delimiter([node], "**", TextType.BOLD)
+        except Exception:
+            self.assertRaises(Exception)
+
     def test_split_node_back_quote_delimiter(self):
         nodes = [
             TextNode("test `test text` test 2", TextType.TEXT)
