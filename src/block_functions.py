@@ -1,3 +1,5 @@
+import re
+
 def markdown_to_blocks(markdown):
     # Empty string list we are adding blocks to
     str_list = []
@@ -13,4 +15,30 @@ def markdown_to_blocks(markdown):
     return str_list
 
 def block_to_block_type(block):
-    pass
+    if re.search(r"^#{1,6} ", block):
+        return "heading"
+    elif re.search(r"^```.*```$", block):
+        return "code"
+    elif re.search(r"^>.*(?:\n^>.*)*$", block, re.M):
+        return "quote"
+    elif re.search(r"^(\*|-) .*(?:\n^(\*|-) .*)*$", block, re.M):
+        return "unordered_list"
+    elif re.search(r"^1\. .*(?:\n^[2-9]\. .*)*$", block, re.M):
+        lines = block.strip().split("\n")
+        ol = True
+        for i in range(0, len(lines)):
+            number_str = lines[i].split('.')[0]  # Get text before the period
+            try:
+                number = int(number_str)  # Convert to integer
+                if number != i + 1:
+                    ol = False
+                    break
+            except ValueError:
+                ol = False
+                break
+        if ol:
+            return "ordered_list"
+        else:
+            return "paragraph"
+    else:
+        return "paragraph"
