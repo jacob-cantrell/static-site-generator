@@ -1,5 +1,6 @@
 from block_functions import markdown_to_html_node
-from os import path, makedirs
+from os import path, makedirs, listdir
+from pathlib import Path
 
 def extract_title(markdown):
     lines = markdown.split("\n")
@@ -42,3 +43,17 @@ def generate_page(from_path, template_path, dest_path):
     file = open(dest_path, 'w')
     file.write(new_html)
     file.close()
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    # Get file list of content directory
+    file_list = listdir(dir_path_content)
+
+    # Traverse files and check if file or directory
+    for file in file_list:
+        # If it's a file, then check if it's markdown
+        if path.isfile(path.join(dir_path_content, file)):
+            if file.endswith(".md"):
+                end_file = file.replace(".md", ".html")
+                generate_page(path.join(dir_path_content, file), template_path, path.join(dest_dir_path, end_file))
+        else: # directory
+            generate_pages_recursive(path.join(dir_path_content, file), template_path, path.join(dest_dir_path, file))

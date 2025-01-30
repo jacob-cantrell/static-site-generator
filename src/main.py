@@ -1,6 +1,8 @@
-from textnode import TextType, TextNode
+from copy_static_to_public import copy_static_to_public
+from generate_page import generate_pages_recursive
 
 def main():
-    print(TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev"))
+    copy_static_to_public()
+    generate_pages_recursive("content/", "template.html", "public/")
 
 main()
