@@ -8,10 +8,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         if node.text_type is not TextType.TEXT:
             text_node_list.append(node)
             continue
-        # Elif invalid markdown syntax for delimiter (length when split is even)
-        # then raise an exception for invalid markdown syntax
-        elif len(node.text.split(delimiter)) % 2 == 0:
-            raise Exception("Invalid Markdown syntax!")
         # Otherwise all checks are valid and traverse the text for markdown
         else:
             split_text = node.text.split(delimiter) # Split the text for creating new Nodes
