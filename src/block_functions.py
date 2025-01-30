@@ -93,11 +93,11 @@ def text_to_children(text):
                 )
             case (TextType.BOLD):
                 children.append(
-                    LeafNode("strong", node.text, None)
+                    LeafNode("b", node.text, None)
                 )
             case (TextType.ITALIC):
                 children.append(
-                    LeafNode("em", node.text, None)
+                    LeafNode("i", node.text, None)
                 )
             case (TextType.CODE):
                 children.append(
